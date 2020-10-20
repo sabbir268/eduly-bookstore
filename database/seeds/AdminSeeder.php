@@ -14,11 +14,9 @@ class AdminSeeder extends Seeder
     public function run()
     {
         $user = User::create([
-            'name' => 'Admin',
             'email' => 'admin@mail.com',
             'email_verified_at' => now(),
             'password' => bcrypt('password'),
-            'api_token' => Str::random(60),
         ]);
 
         $user->assignRole('admin');
