@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Author;
 use Illuminate\Http\Request;
+use App\User;
+use Illuminate\Support\Str;
 
-class AuthorController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,7 +25,6 @@ class AuthorController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -35,16 +35,29 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'password' => 'required|max:10|min:6',
+        ]);
+
+        $data['api_token'] = Str::random(60);
+
+        if ($user = User::create($data)) {
+            $user->assignRole('author');
+            return response(['status' => 'success', 'message' => 'Author created successfully']);
+        } else {
+            return response(['status' => 'error', 'message' => 'Author create failed']);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Author  $author
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Author $author)
+    public function show($id)
     {
         //
     }
@@ -52,10 +65,10 @@ class AuthorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Author  $author
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Author $author)
+    public function edit($id)
     {
         //
     }
@@ -64,10 +77,10 @@ class AuthorController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Author  $author
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Author $author)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -75,10 +88,10 @@ class AuthorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Author  $author
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Author $author)
+    public function destroy($id)
     {
         //
     }
