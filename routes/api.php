@@ -17,3 +17,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('login', 'Auth\LoginController@apiLogin');
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::resource('book', 'BookController')->middleware('role:admin|role:author');
+    Route::post('book/{book}', 'BookController@changePublication')->middleware('role:author');
+    Route::resource('author', 'AuthorController')->middleware('role:admin');
+    Route::resource('publication', 'PublicationController')->middleware('role:admin');
+});

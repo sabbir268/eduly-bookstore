@@ -26,12 +26,13 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+
         $data = $request->validate([
             'name' => 'required|string|max:191',
-            'publication_id' => 'required|number',
+            'publication_id' => 'required|numeric',
         ]);
 
-        $data['author_id'] = auth()->user()->author->id;
+        $data['author_id'] = auth()->user()->hasRole('author') != false ? $request->author_id : auth()->user()->author->id;
 
         if (Book::create($data)) {
             return response(['status' => 'success', 'message' => 'Book creation success!'], 201);
@@ -64,13 +65,16 @@ class BookController extends Controller
     {
         $data = $request->validate([
             'name' => 'string|max:191',
-            'publication_id' => 'number',
+            'publication_id' => 'numeric',
         ]);
-
-        if ($book->update($data)) {
-            return response(['status' => 'success', 'message' => 'Book update success!'], 204);
+        if (auth()->user()->hasRole('admin') || $book->author_id == auth()->user()->author->id) {
+            if ($book->update($data)) {
+                return response(['status' => 'success', 'message' => 'Book update success!'], 202);
+            } else {
+                return response(['status' => 'error', 'message' => 'Book update failed!'], 500);
+            }
         } else {
-            return response(['status' => 'error', 'message' => 'Book update failed!'], 201);
+            return response(['status' => 'error', 'message' => 'Not authorize'], 401);
         }
     }
 
@@ -82,10 +86,25 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        if ($book->delete()) {
-            return response(['status' => 'success', 'message' => 'Book delete success!'], 204);
+        if (auth()->user()->hasRole('admin') || $book->author_id == auth()->user()->author->id) {
+            if ($book->delete()) {
+                return response(['status' => 'success', 'message' => 'Book delete success!'], 202);
+            } else {
+                return response(['status' => 'error', 'message' => 'Book delete failed!'], 500);
+            }
         } else {
-            return response(['status' => 'error', 'message' => 'Book delete failed!'], 500);
+            return response(['status' => 'error', 'message' => 'Not authorize'], 401);
+        }
+    }
+
+
+    public function changePublication(Request $request, Book $book)
+    {
+        if ($request->has('publication_id') && !empty($request->has('publication_id'))) {
+            $book->update(['publication_id' => $request->author_id]);
+            return response(['status' => 'success', 'message' => 'Book publication change success!'], 202);
+        } else {
+            return response(['status' => 'error', 'message' => 'Book publication change failed!'], 500);
         }
     }
 }

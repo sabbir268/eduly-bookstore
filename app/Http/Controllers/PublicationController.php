@@ -33,7 +33,7 @@ class PublicationController extends Controller
         if (Publication::create($data)) {
             return response(['status' => 'success', 'message' => 'Publcation creation success!'], 201);
         } else {
-            return response(['status' => 'error', 'message' => 'Publcation creation failed!'], 201);
+            return response(['status' => 'error', 'message' => 'Publcation creation failed!'], 500);
         }
     }
 
@@ -64,9 +64,9 @@ class PublicationController extends Controller
         ]);
 
         if ($publication->update($data)) {
-            return response(['status' => 'success', 'message' => 'Author update success!'], 204);
+            return response(['status' => 'success', 'message' => 'Author update success!'], 202);
         } else {
-            return response(['status' => 'error', 'message' => 'Publcation update failed!'], 201);
+            return response(['status' => 'error', 'message' => 'Publcation update failed!'], 500);
         }
     }
 
@@ -79,7 +79,7 @@ class PublicationController extends Controller
     public function destroy(Publication $publication)
     {
         if ($publication->delete()) {
-            return response(['status' => 'success', 'message' => 'Publication delete success!'], 204);
+            return response(['status' => 'success', 'message' => 'Publication delete success!'], 202);
         } else {
             return response(['status' => 'error', 'message' => 'Publication delete failed!'], 500);
         }

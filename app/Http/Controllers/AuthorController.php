@@ -79,16 +79,32 @@ class AuthorController extends Controller
             'name' => 'string|max:191',
             'email' => 'email|max:191',
         ]);
+        $status = "";
 
         if ($request->has('name')) {
-            $author->update(['name' => $request->name]);
+            if ($author->update(['name' => $request->name])) {
+                $status = "success";
+            } else {
+                $status = "error";
+            }
         }
 
         if ($request->has('email')) {
-            $author->user()->update(['email' => $request->email]);
+            if ($author->user()->update(['email' => $request->email])) {
+                $status = "success";
+            } else {
+                $status = "error";
+            }
         }
 
-        return response(['status' => 'success', 'message' => 'Author update success!'], 204);
+
+
+        if ($status == "success") {
+            // return $status;
+            return response(['status' => 'success', 'message' => 'Author update success!'], 202);
+        } else {
+            return response(['status' => 'success', 'message' => 'Something went wrong!'], 500);
+        }
     }
 
     /**
@@ -99,8 +115,12 @@ class AuthorController extends Controller
      */
     public function destroy(Author $author)
     {
-        if ($author->delete()) {
-            return response(['status' => 'success', 'message' => 'Author delete success!'], 204);
+        if ($author->user()->delete()) {
+            if ($author->delete()) {
+                return response(['status' => 'success', 'message' => 'Author delete success!'], 202);
+            } else {
+                return response(['status' => 'error', 'message' => 'Author delete failed!'], 500);
+            }
         } else {
             return response(['status' => 'error', 'message' => 'Author delete failed!'], 500);
         }
