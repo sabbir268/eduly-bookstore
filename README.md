@@ -38,6 +38,10 @@ Run the database seeder to create roles & admin
 
     php artisan db:seed
 
+Generate a passport clients
+
+    php artisan passport:client --password
+
 Start the local development server
 
     php artisan serve
@@ -55,9 +59,9 @@ The api can now be accessed at
     http://localhost:8000/api
 **Test api with postman:**
 Open the url in browser (*Postman install require*)
-    https://www.getpostman.com/collections/a569c11587d603553198
+    https://www.getpostman.com/collections/be57b923ac837524aae6
 **API documentation & example in postaman web**
-https://documenter.getpostman.com/view/4965611/TVYCALPS
+    https://documenter.getpostman.com/view/4965611/TVYCAfe7
 
 
 Request headers
@@ -70,3 +74,7 @@ Request headers
 
 #Demo
 https://bookstore.sazibuddin.me/
+
+###Admin Credentials
+    Email: admin@mail.com
+    Password: password
